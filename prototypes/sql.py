@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# small script to test how python creates
+# sqlite3 databases and how to access the
+# data without risk from injection attacks
+
 import sqlite3
 
 conn = sqlite3.connect('/home/pi/Documents/datalogger/database/testing.db')

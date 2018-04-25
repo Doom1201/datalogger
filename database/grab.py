@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# python script that grabs data from the serial port
+# and imports the data into an sqlite3 database
+
 import serial
 import sqlite3
 
