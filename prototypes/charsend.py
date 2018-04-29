@@ -9,6 +9,8 @@ import csv
 with serial.Serial("/dev/ttyAMA0", 38400, timeout = 1) as port: 
     if port.isOpen():
         port.write(b'g')
+        temp = port.readline() * (9/5) + 32
+        print temp
         lines = [x.strip('\r\n') for x in port.readlines()] 
         print lines       
     else:
