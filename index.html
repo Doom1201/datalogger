@@ -16,15 +16,62 @@
 <script>
 function plot(results) {
 var temp = [], humidity = [], pressure = [], light = [];
-var sum=0;
+var tempsum = 0, humiditysum = 0, pressuresum = 0, lightsum = 0;
 var len= 30;
 
-if (results["raw"].length > 30) {
+if (results["raw"].length < 30) {
     len = results["raw"].length;
 }
 
 for (var i = 0; i < len; i++) {
-    temp.push(convert(results["raw"][i].hrtemp,results["raw"][i].t));
+    tempsum = tempsum + results["raw"][i].hrtemp;
+    humiditysum = humiditysum + results["raw"][i].humidity;
+    pressuresum = pressuresum + results["raw"][i].pressure;
+    lightsum = lightsum + results["raw"][i].lux;
+}
+
+for (var i = 0; i < (results["raw"].length - 30); i++) {
+    var tempcurrent = results["raw"][i].hrtemp
+    var humiditycurrent = results["raw"][i].humidity
+    var pressurecurrent = results["raw"][i].pressure
+    var lightcurrent = results["raw"][i].lux
+
+    results["raw"][i].hrtemp = tempsum /30;
+    results["raw"][i].humidity = humiditysum /30;
+    results["raw"][i].pressure = pressuresum /30;
+    results["raw"][i].lux = lightsum /30;
+
+    tempsum = tempsum - tempcurrent + results["raw"][i + len].hrtemp;
+    humiditysum = humiditysum - humiditycurrent + results["raw"][i + len].humidity;
+    pressuresum = pressuresum - pressurecurrent + results["raw"][i + len].pressure;
+    lightsum = lightsum - lightcurrent + results["raw"][i + len].lux;
+
+}
+
+for (var i = (results["raw"].length - 30); i < results["raw"].length; i++) {
+    var tempcurrent = results["raw"][i].hrtemp
+    var humiditycurrent = results["raw"][i].humidity
+    var pressurecurrent = results["raw"][i].pressure
+    var lightcurrent = results["raw"][i].lux
+    var len = results["raw"].length - i;
+
+    results["raw"][i].hrtemp = tempsum / len;
+    results["raw"][i].humidity = humiditysum / len;
+    results["raw"][i].pressure = pressuresum / len;
+    results["raw"][i].lux = lightsum / len;
+
+    tempsum = tempsum - tempcurrent;
+    humiditysum = humiditysum - humiditycurrent;
+    pressuresum = pressuresum - pressurecurrent;
+    lightsum = lightsum - lightcurrent;
+
+}
+
+for (var i = 0; i < results["raw"].length; i++) {
+    temp.push(convert((results["raw"][i].hrtemp * (9/5) + 20),results["raw"][i].t));
+    humidity.push(convert((results["raw"][i].humidity / 1000),results["raw"][i].t));
+    pressure.push(convert((results["raw"][i].pressure / 10000),results["raw"][i].t));
+    light.push(convert((results["raw"][i].lux),results["raw"][i].t));
 }
 
 function convert(value, time) {
@@ -104,6 +151,7 @@ ctx.font = "14px Arial";
 ctx.fillStyle = "white";
 var d = new Date();
 ctx.fillText(d.toLocaleString(),500,60); 
+//ctx.fillText("Inside: " + temp);
 ctx.beginPath();
 ctx.moveTo(75,50);
 ctx.lineTo(85,50);
