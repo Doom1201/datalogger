@@ -15,33 +15,25 @@
 <canvas id="myChart" width="1100" height="900"></canvas>
 <script>
 function plot(results) {
-var sum1=0;
-var sum2=0;
-var len=30;
-if (results["data1"].length<30) {
-    len=results["data1"].length;
+var temp = [], humidity = [], pressure = [], light = [];
+var sum=0;
+var len= 30;
+
+if (results["raw"].length > 30) {
+    len = results["raw"].length;
 }
-for (var j=0;j<len;j++) {
-    sum1=sum1+results["data1"][j].y;
-    sum2=sum2+results["data2"][j].y;
+
+for (var i = 0; i < len; i++) {
+    temp.push(convert(results["raw"][i].hrtemp,results["raw"][i].t));
 }
-for (var i=0; i<results["data1"].length-30; i++) {
-    var current1=results["data1"][i].y;
-    var current2=results["data2"][i].y;
-    results["data1"][i].y=sum1/30;
-    results["data2"][i].y=sum2/30;
-    sum1=sum1-current1+results["data1"][i+len].y;
-    sum2=sum2-current2+results["data2"][i+len].y;
+
+function convert(value, time) {
+    return {
+	t: time,
+	y: value
+    };
 }
-for (var i=results["data1"].length-30; i<results["data1"].length; i++) {
-    var current1=results["data1"][i].y;
-    var current2=results["data2"][i].y;
-    var len=results["data1"].length-i;
-    results["data1"][i].y=sum1/len;
-    results["data2"][i].y=sum2/len;
-    sum1=sum1-current1;
-    sum2=sum2-current2;
-}
+
 var ctx = document.getElementById("myChart").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
@@ -55,7 +47,7 @@ var myChart = new Chart(ctx, {
 			borderColor: "#0000ff",
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
-            data: results["data2"],
+			data: temp,
 			fill: false
         }],
     },
@@ -85,7 +77,7 @@ var myChart = new Chart(ctx, {
 				display: true,
 				scaleLabel: {
 					display: true,
-					labelString: "Temperature, Degrees F",
+					labelString: "Temperature, Degrees C",
 				},
 				gridLines: {
 					zeroLineColor: "rgba(255, 0, 0, 255)",
@@ -104,7 +96,7 @@ var myChart = new Chart(ctx, {
 		},
 		title: {
 			display: true,
-			text: "Strider Temp",
+			text: "Temperature",
 		}
     }
 });
@@ -112,14 +104,13 @@ ctx.font = "14px Arial";
 ctx.fillStyle = "white";
 var d = new Date();
 ctx.fillText(d.toLocaleString(),500,60); 
-ctx.fillText("Inside: " + results["data2"][results["data2"].length-1].y.toFixed(1),90,55);
 ctx.beginPath();
 ctx.moveTo(75,50);
 ctx.lineTo(85,50);
 ctx.stroke();
 
 }
-var jsondata= $.ajax({url:'json-data', dataType: 'json', }).done(function (results) { plot(results); } );
+var jsondata= $.ajax({url:'data', dataType: 'json', }).done(function (results) { plot(results); } );
 </script>
 </body>
 </html>
