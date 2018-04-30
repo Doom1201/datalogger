@@ -5,14 +5,26 @@
 <script type="text/javascript" src="moment-with-locales.js"></script>
 <script type="text/javascript" src="Chart.min.js"></script>
 <script type="text/javascript" src="jquery.min.js"></script>
-<style>
-#myChart {
+<style> 
+#temp {
+	background-color: #000000;
+}
+#humidity {
+	background-color: #000000;
+}
+#pressure {
+	background-color: #000000;
+}
+#light {
 	background-color: #000000;
 }
 </style>
 </head>
 <body bgcolor="black">
-<canvas id="myChart" width="1100" height="900"></canvas>
+<canvas id="temp" width="1200px" height="600px"></canvas>
+<canvas id="humidity" width="1200px" height="600px"></canvas>
+<canvas id="pressure" width="1200px" height="600px"></canvas>
+<canvas id="light" width="1200px" height="600px"></canvas>
 <script>
 function plot(results) {
 var temp = [], humidity = [], pressure = [], light = [];
@@ -81,10 +93,10 @@ function convert(value, time) {
     };
 }
 
-var ctx = document.getElementById("myChart").getContext('2d');
+var ctxtemp = document.getElementById("temp").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
-var myChart = new Chart(ctx, {
+var temp = new Chart(ctxtemp, {
     type: 'line',
     data: {
         datasets: [{
@@ -95,6 +107,74 @@ var myChart = new Chart(ctx, {
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
 			data: temp,
+			fill: false
+        }],
+    },
+    options: {
+		responsive: false,
+		responsiveAnimationDuration:0,
+		animation: {
+			duration: 0,
+		},
+		hover: {
+			animationDuration: 400,
+		},
+
+        scales: {
+			xAxes: [{
+				type: "time",
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Date & Time",
+				},
+				gridLines: {
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}],
+			yAxes: [{
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Temperature, Degrees F",
+				},
+				gridLines: {
+					zeroLineColor: "rgba(255, 0, 0, 255)",
+					zeroLineBorderDash: [4, 8],
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}]
+		},
+		legend: {
+			display: false,
+			position: "top",
+			labels: {
+				boxWidth: 2,
+			},
+		},
+		title: {
+			display: true,
+			text: "Temperature",
+		}
+    }
+});
+
+var ctxhumidity = document.getElementById("humidity").getContext('2d');
+Chart.defaults.global.defaultFontSize = 16;
+Chart.defaults.global.defaultFontColor = "#FFFFFF";
+var humidity = new Chart(ctxhumidity, {
+    type: 'line',
+    data: {
+        datasets: [{
+			label: "Inside",
+			lineTension: 0,
+			pointRadius: 0,
+			borderColor: "#00ff00",
+			borderWidth: 2,
+			cubicInterpolationMode: "monotone",
+			data: humidity,
 			fill: false
         }],
     },
@@ -124,7 +204,7 @@ var myChart = new Chart(ctx, {
 				display: true,
 				scaleLabel: {
 					display: true,
-					labelString: "Temperature, Degrees C",
+					labelString: "Humidity, %",
 				},
 				gridLines: {
 					zeroLineColor: "rgba(255, 0, 0, 255)",
@@ -143,19 +223,144 @@ var myChart = new Chart(ctx, {
 		},
 		title: {
 			display: true,
-			text: "Temperature",
+			text: "Humidity",
 		}
     }
 });
-ctx.font = "14px Arial";
-ctx.fillStyle = "white";
-var d = new Date();
-ctx.fillText(d.toLocaleString(),500,60); 
-//ctx.fillText("Inside: " + temp);
-ctx.beginPath();
-ctx.moveTo(75,50);
-ctx.lineTo(85,50);
-ctx.stroke();
+
+var ctxpressure = document.getElementById("pressure").getContext('2d');
+Chart.defaults.global.defaultFontSize = 16;
+Chart.defaults.global.defaultFontColor = "#FFFFFF";
+var pressure = new Chart(ctxpressure, {
+    type: 'line',
+    data: {
+        datasets: [{
+			label: "Inside",
+			lineTension: 0,
+			pointRadius: 0,
+			borderColor: "#ff0000",
+			borderWidth: 2,
+			cubicInterpolationMode: "monotone",
+			data: pressure,
+			fill: false
+        }],
+    },
+    options: {
+		responsive: false,
+		responsiveAnimationDuration:0,
+		animation: {
+			duration: 0,
+		},
+		hover: {
+			animationDuration: 400,
+		},
+        scales: {
+			xAxes: [{
+				type: "time",
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Date & Time",
+				},
+				gridLines: {
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}],
+			yAxes: [{
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Pressure, mbar",
+				},
+				gridLines: {
+					zeroLineColor: "rgba(255, 0, 0, 255)",
+					zeroLineBorderDash: [4, 8],
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}]
+		},
+		legend: {
+			display: false,
+			position: "top",
+			labels: {
+				boxWidth: 2,
+			},
+		},
+		title: {
+			display: true,
+			text: "Pressure",
+		}
+    }
+});
+
+var ctxlight = document.getElementById("light").getContext('2d');
+Chart.defaults.global.defaultFontSize = 16;
+Chart.defaults.global.defaultFontColor = "#FFFFFF";
+var light = new Chart(ctxlight, {
+    type: 'line',
+    data: {
+        datasets: [{
+			label: "Inside",
+			lineTension: 0,
+			pointRadius: 0,
+			borderColor: "#ffffff",
+			borderWidth: 2,
+			cubicInterpolationMode: "monotone",
+			data: light,
+			fill: false
+        }],
+    },
+    options: {
+		responsive: false,
+		responsiveAnimationDuration:0,
+		animation: {
+			duration: 0,
+		},
+		hover: {
+			animationDuration: 400,
+		},
+        scales: {
+			xAxes: [{
+				type: "time",
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Date & Time",
+				},
+				gridLines: {
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}],
+			yAxes: [{
+				display: true,
+				scaleLabel: {
+					display: true,
+					labelString: "Light, lux",
+				},
+				gridLines: {
+					zeroLineColor: "rgba(255, 0, 0, 255)",
+					zeroLineBorderDash: [4, 8],
+					color: "rgba(255, 0, 0, 255)",
+					borderDash: [4, 8],
+				},
+			}]
+		},
+		legend: {
+			display: false,
+			position: "top",
+			labels: {
+				boxWidth: 2,
+			},
+		},
+		title: {
+			display: true,
+			text: "Light",
+		}
+    }
+});
 
 }
 var jsondata= $.ajax({url:'data', dataType: 'json', }).done(function (results) { plot(results); } );
