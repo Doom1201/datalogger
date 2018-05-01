@@ -27,14 +27,18 @@
 <canvas id="light" width="1200px" height="600px"></canvas>
 <script>
 function plot(results) {
+// variables to put the converted data values in
 var temp = [], humidity = [], pressure = [], light = [];
+// variable for the windowing average
 var tempsum = 0, humiditysum = 0, pressuresum = 0, lightsum = 0;
 var len= 30;
 
+// define a new len if the dataset is less than 30
 if (results["raw"].length < 30) {
     len = results["raw"].length;
 }
 
+// windowing average
 for (var i = 0; i < len; i++) {
     tempsum = tempsum + results["raw"][i].hrtemp;
     humiditysum = humiditysum + results["raw"][i].humidity;
@@ -79,6 +83,7 @@ for (var i = (results["raw"].length - 30); i < results["raw"].length; i++) {
 
 }
 
+// grab the data from the object 'raw' and do unit conversions, and put the data into the right variable 
 for (var i = 0; i < results["raw"].length; i++) {
     temp.push(convert((results["raw"][i].hrtemp * (9/5) + 20),results["raw"][i].t));
     humidity.push(convert((results["raw"][i].humidity / 1000),results["raw"][i].t));
@@ -86,6 +91,7 @@ for (var i = 0; i < results["raw"].length; i++) {
     light.push(convert((results["raw"][i].lux),results["raw"][i].t));
 }
 
+// function that changes the values passed in to forms that Chartjs can understand, t and y
 function convert(value, time) {
     return {
 	t: time,
@@ -93,6 +99,7 @@ function convert(value, time) {
     };
 }
 
+// define a new graph in the temp canvas
 var ctxtemp = document.getElementById("temp").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
@@ -103,9 +110,11 @@ var temp = new Chart(ctxtemp, {
 			label: "Inside",
 			lineTension: 0,
 			pointRadius: 0,
+			// blue line color
 			borderColor: "#0000ff",
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
+			// data is the variable that we want to graph
 			data: temp,
 			fill: false
         }],
@@ -161,6 +170,7 @@ var temp = new Chart(ctxtemp, {
     }
 });
 
+// humidity graph
 var ctxhumidity = document.getElementById("humidity").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
@@ -171,9 +181,11 @@ var humidity = new Chart(ctxhumidity, {
 			label: "Inside",
 			lineTension: 0,
 			pointRadius: 0,
+			// green line color
 			borderColor: "#00ff00",
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
+			// data is the variable that we want to graph
 			data: humidity,
 			fill: false
         }],
@@ -228,6 +240,7 @@ var humidity = new Chart(ctxhumidity, {
     }
 });
 
+// pressure graph
 var ctxpressure = document.getElementById("pressure").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
@@ -238,9 +251,11 @@ var pressure = new Chart(ctxpressure, {
 			label: "Inside",
 			lineTension: 0,
 			pointRadius: 0,
+			// red line color
 			borderColor: "#ff0000",
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
+			// data is the variable that we want to graph
 			data: pressure,
 			fill: false
         }],
@@ -295,6 +310,7 @@ var pressure = new Chart(ctxpressure, {
     }
 });
 
+// light graph
 var ctxlight = document.getElementById("light").getContext('2d');
 Chart.defaults.global.defaultFontSize = 16;
 Chart.defaults.global.defaultFontColor = "#FFFFFF";
@@ -305,9 +321,11 @@ var light = new Chart(ctxlight, {
 			label: "Inside",
 			lineTension: 0,
 			pointRadius: 0,
+			// line color is white
 			borderColor: "#ffffff",
 			borderWidth: 2,
 			cubicInterpolationMode: "monotone",
+			// data is the variable that we want to graph
 			data: light,
 			fill: false
         }],
@@ -361,7 +379,6 @@ var light = new Chart(ctxlight, {
 		}
     }
 });
-
 }
 var jsondata= $.ajax({url:'data', dataType: 'json', }).done(function (results) { plot(results); } );
 </script>
